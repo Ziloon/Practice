@@ -27,7 +27,7 @@ TARGET: env $(OBJS) createdir
 	@echo "-c $@"
 	@$(CC) -o $(TARGET) $(OBJS) $(IFLAGS)
 
-$(OBJDIR)%.o: $(SRCDIR)%.c $(OBJDIR)%.o
+$(OBJDIR)%.o: $(SRCDIR)%.c $(OBJDIR)%.d
 	@echo "-c $@"
 	@$(CC) -c $(CFLAGS) $< -o $@ $(IFLAGS)
 
