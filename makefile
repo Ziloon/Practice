@@ -23,15 +23,15 @@ IFLAGS += -I$(HDRDIR)
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	@echo "-c $@"
+	@echo "-c $(@F)"
 	@$(CC) -o $@ $(OBJS) $(IFLAGS)
 
 $(OBJDIR)%.o: $(SRCDIR)%.c $(OBJDIR)%.d
-	@echo "-c $@"
+	@echo "-c $(@F)"
 	@$(CC) -c $(CFLAGS) $< -o $@ $(IFLAGS)
 
 $(OBJDIR)%.d: $(SRCDIR)%.c
-	@echo "-c $@"
+	@echo "-c $(@F)"
 	@$(CC) -MM $(CFLAGS) $< $(IFLAGS) > $@.tmp
 	@sed 's,/($*/)/.o[ :]*,/1.o $@ : ,g' < $@.tmp > $@
 	@$(RM) $@.tmp
@@ -40,7 +40,7 @@ sinclude $(DEPS)
 
 .PHONY: createdir
 createdir:
-	@if [ ! -e $(OBJDIR) ];then $(MKDIR) $(OBJDIR); echo "-c $(OBJDIR)"; fi;
+	@if [ ! -e $(OBJDIR) ];then $(MKDIR) $(OBJDIR); fi;
 
 sinclude createdir
 
@@ -53,7 +53,7 @@ env:
 
 .PHONY: clean
 clean:
-	@if [ -e $(OBJDIR) ]; then $(RM) -rf $(OBJDIR); echo "-d $(OBJDIR)"; fi;
+	@if [ -e $(OBJDIR) ]; then $(RM) -rf $(OBJDIR); fi;
 	@if [ -e $(TARGET) ]; then $(RM) -rf $(TARGET); echo "-d $(TARGET)"; fi;
 
 
