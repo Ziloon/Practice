@@ -20,12 +20,11 @@ DEPS := $(OBJS:%.o=%.d)
 IFLAGS += -I$(HDRDIR)
 #$(addprefix -I, $(HDRS))
 
-sinclude $(DEPS)
-sinclude createdir
+all: $(TARGET)
 
-TARGET: env $(OBJS) createdir
+$(TARGET): $(OBJS)
 	@echo "-c $@"
-	@$(CC) -o $(TARGET) $(OBJS) $(IFLAGS)
+	@$(CC) -o $@ $(OBJS) $(IFLAGS)
 
 $(OBJDIR)%.o: $(SRCDIR)%.c $(OBJDIR)%.d
 	@echo "-c $@"
@@ -37,9 +36,13 @@ $(OBJDIR)%.d: $(SRCDIR)%.c
 	@sed 's,/($*/)/.o[ :]*,/1.o $@ : ,g' < $@.tmp > $@
 	@$(RM) $@.tmp
 
+sinclude $(DEPS)
+
 .PHONY: createdir
 createdir:
 	@if [ ! -e $(OBJDIR) ];then $(MKDIR) $(OBJDIR); echo "-c $(OBJDIR)"; fi;
+
+sinclude createdir
 
 .PHONY: env
 env:
