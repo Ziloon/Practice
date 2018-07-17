@@ -8,10 +8,12 @@ typedef struct
 	int *data;
 } set;
 
-int init(set s, unsigned max_len);
-int destory(set s);
+int init(set *s, unsigned max_len);
+int destory(set *s);
 int add(set s, int e);
 int find(set s, int e);
 int del(set s, int e);
+int set_test();
+int display(set s);
 
 #endif
