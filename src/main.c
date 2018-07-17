@@ -5,6 +5,5 @@
 
 int main(int argc, char const *argv[])
 {
-	set_test();
 	return 0;
 }
