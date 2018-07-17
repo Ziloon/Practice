@@ -18,13 +18,14 @@ DEPS := $(OBJS:%.o=%.d)
 
 # block make flag configure.
 IFLAGS += -I$(HDRDIR)
+CFLAGS += -g
 #$(addprefix -I, $(HDRS))
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	@echo "-c $(@F)"
-	@$(CC) -o $@ $(OBJS) $(IFLAGS)
+	@$(CC) -o $@ $(OBJS) $(CFLAGS) $(IFLAGS)
 
 $(OBJDIR)%.o: $(SRCDIR)%.c $(OBJDIR)%.d
 	@echo "-c $(@F)"
