@@ -7,4 +7,6 @@ typedef enum
 	TRUE
 } BOOL;
 
+#define ELEMENT_NUM_OF(array) (sizeof(array) / sizeof(array[0]))
+
 #endif
