@@ -13,6 +13,7 @@
 #include "type.h"
 
 // 全局变量
+LOG_IMPORT("Shell", LOG_LEV_INFO);
 
 static const char * const gstrPrompt = "myshell >> ";
 

@@ -5,6 +5,8 @@
 #include "log.h"
 #include "set.h"
 
+LOG_IMPORT("Set", LOG_LEV_INFO);
+
 int set_test()
 {
     int i = 0;
