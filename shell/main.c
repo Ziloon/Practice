@@ -1,19 +1,37 @@
-#include <readline/readline.h>
-#include <readline/history.h>
 #include <assert.h>
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#include "type.h"
+#include "log.h"
 #include "shell.h"
+#include "type.h"
 
-static char *gstr_input_tty = NULL;  //终端输入字符串
-static char *gstr_trim_tty = NULL; //剔除前端空格的输入字符串
-static const char * const pszCmdPrompt = "myshell >> ";
+// 全局变量
+static char *gpstrInput = NULL; //终端输入字符串
 
-static CMD_PROC gCmdMap[] = {
+static char *gpstrStrip = NULL; //剔除前端空格的输入字符串
+
+static const char * const gstrPrompt = "myshell >> ";
+
+static CMD_PROC gastCmdRegister[] = {
+    // 退出命令，不区分大小写
+    CMD_ENTRY("Quit", ExecExit),
+    CMD_ENTRY("Q", ExecExit),
+    CMD_ENTRY("Exit", ExecExit),
+    CMD_ENTRY("End", ExecExit),
+    CMD_ENTRY("E", ExecExit),
+    CMD_ENTRY("Bye", ExecExit),
+    CMD_ENTRY("B", ExecExit),
+
+    // 函数命令
     CMD_REGISTER(ShowMeInfo),
     CMD_REGISTER(SetLogCtrl),
     CMD_REGISTER(TestBatch),
     CMD_REGISTER(TestEndianOper),
+
+    // 命令结束
     CMD_ENTRY_END
 };
 
@@ -27,20 +45,28 @@ static const char *pszQuitCmd[] = {
     "B"
 };
 
-static const int CMD_MAP_NUM = ELEMENT_NUM_OF(gCmdMap);
+static const int CMD_MAP_NUM = ELEMENT_NUM_OF(gastCmdRegister);
+
 static const int QUIT_CMD_NUM = ELEMENT_NUM_OF(pszQuitCmd);
 
+// 函数定义
 EXEC_FUNC_DEFINE(ShowMeInfo);
 EXEC_FUNC_DEFINE(SetLogCtrl);
 EXEC_FUNC_DEFINE(TestBatch);
 EXEC_FUNC_DEFINE(TestEndianOper);
 
-//返回gCmdMap中的CmdStr列(必须为只读字符串)，以供CmdGenerator使用
+int ExecExit(void)
+{
+    logInfo("命令行退出 ^_^\n");
+    exit(0);
+}
+
+//返回gastCmdRegister中的CmdStr列(必须为只读字符串)，以供CmdGenerator使用
 static char *GetCmdByIndex(unsigned int dwCmdIndex)
 {
     if(dwCmdIndex >=  CMD_MAP_NUM)
         return NULL;
-    return gCmdMap[dwCmdIndex].pszCmd;
+    return gastCmdRegister[dwCmdIndex].pszCmd;
 }
 
 //执行命令
@@ -52,12 +78,12 @@ static int ExecCmd(char *pszCmdLine)
     unsigned int dwCmdIndex = 0;
     for(; dwCmdIndex < CMD_MAP_NUM; dwCmdIndex++)
     {
-        if(!strcmp(pszCmdLine, gCmdMap[dwCmdIndex].pszCmd))
+        if(!strcmp(pszCmdLine, gastCmdRegister[dwCmdIndex].pszCmd))
             break;
     }
     if(CMD_MAP_NUM == dwCmdIndex)
         return -1;
-    gCmdMap[dwCmdIndex].fpCmd(); //调用相应的函数
+    gastCmdRegister[dwCmdIndex].fpCmd(); //调用相应的函数
 
     return 0;
 }
@@ -99,23 +125,23 @@ static char *StripWhite(char *pszOrig)
 char *ReadCmdLine()
 {
      //若已分配命令行缓冲区，则将其释放
-    if(gstr_input_tty)
+    if(gpstrInput)
     {
-        free(gstr_input_tty);
-        gstr_input_tty = NULL;
+        free(gpstrInput);
+        gpstrInput = NULL;
     }
     //读取用户输入的命令行
-    gstr_input_tty = readline(pszCmdPrompt);
+    gpstrInput = readline(gstrPrompt);
 
     //剔除命令行首尾的空白字符。若剔除后的命令不为空，则存入历史列表
-    gstr_trim_tty = StripWhite(gstr_input_tty);
-    if(NULL != gstr_trim_tty 
-        && NULL != *gstr_trim_tty)
+    gpstrStrip = StripWhite(gpstrInput);
+    if(NULL != gpstrStrip 
+        && NULL != *gpstrStrip)
     {
-        add_history(gstr_trim_tty);
+        add_history(gpstrStrip);
     }
 
-    return gstr_trim_tty;
+    return gpstrStrip;
 }
 
 static char *CmdGenerator(const char *pszText, int dwState)
@@ -133,7 +159,7 @@ static char *CmdGenerator(const char *pszText, int dwState)
     {
         dwListIdx++;
         assert(pszName != NULL);
-        if(!strncmp (pszName, pszText, dwTextLen))
+        if(!strncasecmp (pszName, pszText, dwTextLen))
             return strdup(pszName);
     }
 
@@ -164,12 +190,10 @@ int main(void)
     while(1)
     {//也可加入超时机制以免忘记退出
         char *pszCmdLine = ReadCmdLine();
-        if(IsUserQuitCmd(pszCmdLine))
+        if (NULL == pszCmdLine)
         {
-            free(gstr_input_tty);
-            break;
+            continue;
         }
-
         ExecCmd(pszCmdLine);
     }
 
