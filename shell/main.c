@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "cmd.h"
 #include "log.h"
 #include "shell.h"
 #include "type.h"
@@ -36,18 +37,6 @@ static CMD_PROC gastCmdRegister[] = {
 };
 
 static const int CMD_MAP_NUM = ELEMENT_NUM_OF(gastCmdRegister);
-
-// 函数定义
-EXEC_FUNC_DEFINE(ShowMeInfo);
-EXEC_FUNC_DEFINE(SetLogCtrl);
-EXEC_FUNC_DEFINE(TestBatch);
-EXEC_FUNC_DEFINE(TestEndianOper);
-
-int ExecExit(void)
-{
-    disp("命令行退出 ^_^\n");
-    exit(0);
-}
 
 //返回gastCmdRegister中的CmdStr列(必须为只读字符串)，以供CmdGenerator使用
 static char *GetCmdByIndex(unsigned int dwCmdIndex)
