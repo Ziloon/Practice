@@ -17,4 +17,6 @@ typedef enum
 
 #define ELEMENT_NUM_OF(array) (sizeof(array) / sizeof(array[0]))
 
+int StringSplit(char *pstrIn, char sign, char *astrOut, int slStrlenMax, int slStrCntMax, int *pslCnt);
+
 #endif
