@@ -5,28 +5,16 @@
 #include "type.h"
 #include "shell.h"
 
-static char *pszLineRead = NULL;  //终端输入字符串
-static char *pszStripLine = NULL; //剔除前端空格的输入字符串
+static char *gstr_input_tty = NULL;  //终端输入字符串
+static char *gstr_trim_tty = NULL; //剔除前端空格的输入字符串
 static const char * const pszCmdPrompt = "myshell >> ";
 
-#define MOCK_FUNC_DECLARATION(funcName)\
-int funcName(void)
+EXEC_FUNC_DECLARATION(ShowMeInfo);
+EXEC_FUNC_DECLARATION(SetLogCtrl);
+EXEC_FUNC_DECLARATION(TestBatch);
+EXEC_FUNC_DECLARATION(TestEndianOper);
 
-#define MOCK_FUNC_DEFINE(funcName) \
-int funcName(void)\
-{\
-    printf("Enter "#funcName"!\n");\
-    return 0;\
-}
 
-MOCK_FUNC_DECLARATION(ShowMeInfo);
-MOCK_FUNC_DECLARATION(SetLogCtrl);
-MOCK_FUNC_DECLARATION(TestBatch);
-MOCK_FUNC_DECLARATION(TestEndianOper);
-
-//命令表
-#define CMD_ENTRY(cmdStr, func)     {cmdStr, func}
-#define CMD_ENTRY_END               {NULL,   NULL}
 
 static CMD_PROC gCmdMap[] = {
     CMD_ENTRY("ShowMeInfo",       ShowMeInfo),
@@ -49,10 +37,10 @@ static const char *pszQuitCmd[] = {
 static const int CMD_MAP_NUM = ELEMENT_NUM_OF(gCmdMap);
 static const int QUIT_CMD_NUM = ELEMENT_NUM_OF(pszQuitCmd);
 
-MOCK_FUNC_DEFINE(ShowMeInfo);
-MOCK_FUNC_DEFINE(SetLogCtrl);
-MOCK_FUNC_DEFINE(TestBatch);
-MOCK_FUNC_DEFINE(TestEndianOper);
+EXEC_FUNC_DEFINE(ShowMeInfo);
+EXEC_FUNC_DEFINE(SetLogCtrl);
+EXEC_FUNC_DEFINE(TestBatch);
+EXEC_FUNC_DEFINE(TestEndianOper);
 
 //返回gCmdMap中的CmdStr列(必须为只读字符串)，以供CmdGenerator使用
 static char *GetCmdByIndex(unsigned int dwCmdIndex)
@@ -118,23 +106,23 @@ static char *StripWhite(char *pszOrig)
 char *ReadCmdLine()
 {
      //若已分配命令行缓冲区，则将其释放
-    if(pszLineRead)
+    if(gstr_input_tty)
     {
-        free(pszLineRead);
-        pszLineRead = NULL;
+        free(gstr_input_tty);
+        gstr_input_tty = NULL;
     }
     //读取用户输入的命令行
-    pszLineRead = readline(pszCmdPrompt);
+    gstr_input_tty = readline(pszCmdPrompt);
 
     //剔除命令行首尾的空白字符。若剔除后的命令不为空，则存入历史列表
-    pszStripLine = StripWhite(pszLineRead);
-    if(NULL != pszStripLine 
-        && NULL != *pszStripLine)
+    gstr_trim_tty = StripWhite(gstr_input_tty);
+    if(NULL != gstr_trim_tty 
+        && NULL != *gstr_trim_tty)
     {
-        add_history(pszStripLine);
+        add_history(gstr_trim_tty);
     }
 
-    return pszStripLine;
+    return gstr_trim_tty;
 }
 
 static char *CmdGenerator(const char *pszText, int dwState)
@@ -185,7 +173,7 @@ int main(void)
         char *pszCmdLine = ReadCmdLine();
         if(IsUserQuitCmd(pszCmdLine))
         {
-            free(pszLineRead);
+            free(gstr_input_tty);
             break;
         }
 
