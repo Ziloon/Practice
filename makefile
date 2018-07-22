@@ -18,8 +18,7 @@ DEPS := $(OBJS:%.o=%.d)
 
 # block make flag configure.
 IFLAGS += -I$(HDRDIR)
-CFLAGS += -g -Wall 
-LFLAGS += -lreadline -lncurses
+CFLAGS += -g
 #$(addprefix -I, $(HDRS))
 
 all: $(TARGET)
