@@ -45,7 +45,7 @@ EXEC_FUNC_DEFINE(TestEndianOper);
 
 int ExecExit(void)
 {
-    logInfo("命令行退出 ^_^\n");
+    disp("命令行退出 ^_^\n");
     exit(0);
 }
 
@@ -159,8 +159,8 @@ static void InitReadLine(void)
 
 int main(void)
 {
-    printf("Note: Welcome to Interactive Command!\n");
-    printf("      Press 'Quit'/'Exit'/'End'/'Bye'/'Q'/'E'/'B' to quit!\n\n");
+    disp("Note: Welcome to Interactive Command!\n");
+    disp("      Press 'Quit'/'Exit'/'End'/'Bye'/'Q'/'E'/'B' to quit!\n\n");
     InitReadLine();
     while(1)
     {//也可加入超时机制以免忘记退出

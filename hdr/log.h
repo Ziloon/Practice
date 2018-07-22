@@ -1,6 +1,12 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 
+#define disp(fmt, arg ...)\
+do\
+{\
+	printf(fmt, ##arg);\
+} while (0)
+
 #define log(lev, fmt, arg ...)\
 do {\
 	printf("[%s][%s:%d]"fmt, lev, __func__, __LINE__, ##arg);\
