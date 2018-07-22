@@ -35,19 +35,7 @@ static CMD_PROC gastCmdRegister[] = {
     CMD_ENTRY_END
 };
 
-static const char *pszQuitCmd[] = {
-    "Quit", 
-    "Exit", 
-    "End", 
-    "Bye", 
-    "Q", 
-    "E", 
-    "B"
-};
-
 static const int CMD_MAP_NUM = ELEMENT_NUM_OF(gastCmdRegister);
-
-static const int QUIT_CMD_NUM = ELEMENT_NUM_OF(pszQuitCmd);
 
 // 函数定义
 EXEC_FUNC_DEFINE(ShowMeInfo);
@@ -86,19 +74,6 @@ static int ExecCmd(char *pszCmdLine)
     gastCmdRegister[dwCmdIndex].fpCmd(); //调用相应的函数
 
     return 0;
-}
-
-//退出交互式调测器的命令(不区分大小写)
-static BOOL IsUserQuitCmd(char *pszCmd)
-{
-    int idx = 0;
-    for(idx = 0; idx < QUIT_CMD_NUM; idx++)
-    {
-        if(!strcasecmp(pszCmd, pszQuitCmd[idx]))
-            return TRUE;
-    }
-
-    return FALSE;
 }
 
 //剔除字符串首尾的空白字符(含空格)
