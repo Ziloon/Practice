@@ -25,7 +25,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	@echo "-c $(@F)"
-	@$(CC) -o $@ $(OBJS) $(CFLAGS) $(IFLAGS)
+	@$(CC) -o $@ $(OBJS) $(CFLAGS) $(IFLAGS) $(LFLAGS)
 
 $(OBJDIR)%.o: $(SRCDIR)%.c $(OBJDIR)%.d
 	@echo "-c $(@F)"

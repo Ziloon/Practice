@@ -7,11 +7,11 @@ typedef int (*CmdProcFunc)(void);
 typedef struct{
     char         *pszCmd;
     CmdProcFunc  fpCmd;
+    BOOL bCaseSensitive;
 }CMD_PROC;
 
 //命令表
-#define CMD_ENTRY(cmdStr, func)     {cmdStr, func}
-#define CMD_ENTRY_END               {NULL,   NULL}
-#define CMD_REGISTER(func)          CMD_ENTRY(#func, func)
+#define CMD_ENTRY(cmdStr, func, caseSensitive)     {cmdStr, func, caseSensitive}
+#define CMD_REGISTER(func)          CMD_ENTRY(#func, func, TRUE)
 
 #endif
