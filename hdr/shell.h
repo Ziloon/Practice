@@ -12,6 +12,7 @@ typedef struct{
 //命令表
 #define CMD_ENTRY(cmdStr, func)     {cmdStr, func}
 #define CMD_ENTRY_END               {NULL,   NULL}
+#define CMD_REGISTER(func)          CMD_ENTRY(#func, func)
 
 #define EXEC_FUNC_DECLARATION(funcName)\
 int funcName(void)
@@ -22,5 +23,12 @@ int funcName(void)\
     printf("Enter "#funcName"!\n");\
     return 0;\
 }
+
+
+// 函数声明
+EXEC_FUNC_DECLARATION(ShowMeInfo);
+EXEC_FUNC_DECLARATION(SetLogCtrl);
+EXEC_FUNC_DECLARATION(TestBatch);
+EXEC_FUNC_DECLARATION(TestEndianOper);
 
 #endif

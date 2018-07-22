@@ -9,18 +9,11 @@ static char *gstr_input_tty = NULL;  //终端输入字符串
 static char *gstr_trim_tty = NULL; //剔除前端空格的输入字符串
 static const char * const pszCmdPrompt = "myshell >> ";
 
-EXEC_FUNC_DECLARATION(ShowMeInfo);
-EXEC_FUNC_DECLARATION(SetLogCtrl);
-EXEC_FUNC_DECLARATION(TestBatch);
-EXEC_FUNC_DECLARATION(TestEndianOper);
-
-
-
 static CMD_PROC gCmdMap[] = {
-    CMD_ENTRY("ShowMeInfo",       ShowMeInfo),
-    CMD_ENTRY("SetLogCtrl",       SetLogCtrl),
-    CMD_ENTRY("TestBatch",        TestBatch),
-    CMD_ENTRY("TestEndian",       TestEndianOper),
+    CMD_REGISTER(ShowMeInfo),
+    CMD_REGISTER(SetLogCtrl),
+    CMD_REGISTER(TestBatch),
+    CMD_REGISTER(TestEndianOper),
     CMD_ENTRY_END
 };
 
