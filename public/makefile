@@ -1,40 +1,30 @@
-# target and dir path configure.
-TARGET := myshell
+# # toolchain configure.
+# CC ?= gcc
+# RM ?= rm
+# MKDIR ?= mkdir
+
 WORKDIR := $(shell pwd)
-SRCDIR := $(WORKDIR)/shell
+SRCDIR := $(WORKDIR)/src
 HDRDIR := $(WORKDIR)/hdr
 OBJDIR := $(WORKDIR)/obj
 
-# toolchain configure.
-CC ?= gcc
-RM ?= rm
-MKDIR = mkdir
-
-# file search.
-HDRS := $(shell find $(HDRDIR) -type f -iname "*.h")
 SRCS := $(shell find $(SRCDIR) -type f -iname "*.c")
 OBJS := $(patsubst $(SRCDIR)%, $(OBJDIR)%, $(SRCS:%.c=%.o))
 DEPS := $(OBJS:%.o=%.d)
 
-# block make flag configure.
-IFLAGS += -I$(HDRDIR)
-CFLAGS += -g -Wall 
-LFLAGS += -lreadline -lncurses
-#$(addprefix -I, $(HDRS))
+BLOCK_IFLAGS := $(IFLAGS) -I$(HDRDIR)
+BLOCK_CFLAGS := $(CFLAGS) -g -Wall 
 
-all: $(TARGET)
+all: public_bin
 
-$(TARGET): $(OBJS)
-	@echo "-c $(@F)"
-	@$(CC) -o $@ $(OBJS) $(CFLAGS) $(IFLAGS) $(LFLAGS)
+public_bin: $(OBJS)
 
 $(OBJDIR)%.o: $(SRCDIR)%.c $(OBJDIR)%.d
 	@echo "-c $(@F)"
-	@$(CC) -c $(CFLAGS) $< -o $@ $(IFLAGS)
+	@$(CC) -c $(BLOCK_CFLAGS) $< -o $@ $(BLOCK_IFLAGS)
 
 $(OBJDIR)%.d: $(SRCDIR)%.c
-	@echo "-c $(@F)"
-	@$(CC) -MM $(CFLAGS) $< $(IFLAGS) > $@.tmp
+	@$(CC) -MM $(BLOCK_CFLAGS) $< $(BLOCK_IFLAGS) > $@.tmp
 	@sed 's,/($*/)/.o[ :]*,/1.o $@ : ,g' < $@.tmp > $@
 	@$(RM) $@.tmp
 
@@ -56,6 +46,3 @@ env:
 .PHONY: clean
 clean:
 	@if [ -e $(OBJDIR) ]; then $(RM) -rf $(OBJDIR); fi;
-	@if [ -e $(TARGET) ]; then $(RM) -rf $(TARGET); echo "-d $(TARGET)"; fi;
-
-

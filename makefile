@@ -1,60 +1,39 @@
-# target and dir path configure.
-TARGET := Practice
-WORKDIR := $(shell pwd)
-SRCDIR := $(WORKDIR)/src
-HDRDIR := $(WORKDIR)/hdr
-OBJDIR := $(WORKDIR)/obj
-
 # toolchain configure.
 CC ?= gcc
 RM ?= rm
-MKDIR = mkdir
+MKDIR ?= mkdir
 
-# file search.
-HDRS := $(shell find $(HDRDIR) -type f -iname "*.h")
-SRCS := $(shell find $(SRCDIR) -type f -iname "*.c")
-OBJS := $(patsubst $(SRCDIR)%, $(OBJDIR)%, $(SRCS:%.c=%.o))
-DEPS := $(OBJS:%.o=%.d)
+WORKDIR := $(shell pwd)
+OUTPUT := $(WORKDIR)/output
+SERVER_DIR := $(WORKDIR)/server
+SHELL_DIR := $(WORKDIR)/shell
+SERVER_BIN := server.out
+SHELL_BIN := shell.out
 
-# block make flag configure.
-IFLAGS += -I$(HDRDIR)
-CFLAGS += -g
-#$(addprefix -I, $(HDRS))
+all: server shell
 
-all: $(TARGET)
+server: $(OUTPUT)/$(SERVER_BIN)
 
-$(TARGET): $(OBJS)
-	@echo "-c $(@F)"
-	@$(CC) -o $@ $(OBJS) $(CFLAGS) $(IFLAGS) $(LFLAGS)
+shell: $(OUTPUT)/$(SHELL_BIN)
 
-$(OBJDIR)%.o: $(SRCDIR)%.c $(OBJDIR)%.d
-	@echo "-c $(@F)"
-	@$(CC) -c $(CFLAGS) $< -o $@ $(IFLAGS)
+$(OUTPUT)/$(SERVER_BIN):
+	@make -C $(SERVER_DIR)
+	@cp $(SERVER_DIR)/obj/$(SERVER_BIN) $(OUTPUT)/
 
-$(OBJDIR)%.d: $(SRCDIR)%.c
-	@echo "-c $(@F)"
-	@$(CC) -MM $(CFLAGS) $< $(IFLAGS) > $@.tmp
-	@sed 's,/($*/)/.o[ :]*,/1.o $@ : ,g' < $@.tmp > $@
-	@$(RM) $@.tmp
+$(OUTPUT)/$(SHELL_BIN):
+	@make -C $(SHELL_DIR)
+	@cp $(SHELL_DIR)/obj/$(SHELL_BIN) $(OUTPUT)/
 
-sinclude $(DEPS)
-
-.PHONY: createdir
 createdir:
-	@if [ ! -e $(OBJDIR) ];then $(MKDIR) $(OBJDIR); fi;
+	@if [ ! -e $(OUTPUT) ];then $(MKDIR) $(OUTPUT); fi;
 
 sinclude createdir
+	
+clean: server_clean shell_clean
+	@if [ -e $(OUTPUT) ]; then $(RM) -rf $(OUTPUT); fi;
 
-.PHONY: env
-env:
-	@echo [Head files is] $(HDRS)
-	@echo [Src  files is] $(SRCS)
-	@echo [Objects    is] $(OBJS)
-	@echo [Depend     is] $(DEPS)
+server_clean:
+	@make -C $(SERVER_DIR) clean
 
-.PHONY: clean
-clean:
-	@if [ -e $(OBJDIR) ]; then $(RM) -rf $(OBJDIR); fi;
-	@if [ -e $(TARGET) ]; then $(RM) -rf $(TARGET); echo "-d $(TARGET)"; fi;
-
-
+shell_clean:
+	@make -C $(SHELL_DIR) clean
