@@ -1,6 +1,6 @@
 #include "log.h"
 
-LOG_NODE_STRU gastLogLevelDespStr[LOG_LEV_LAST] = 
+LOG_NODE_STRU gastLogLevelDespStr[LOG_LEV_LAST] =
 {
 	{"NULL", LOG_LEV_NULL},
 	{"DISP", LOG_LEV_DISP},

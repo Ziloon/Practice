@@ -43,7 +43,7 @@ int StringSplit(char *pstrIn, char sign, char *astrOut, int slStrlenMax, int slS
 		}
 
 		slIdx += 1;
-	} while(pstrIn[slIdx] != '\0');
+	} while (pstrIn[slIdx] != '\0');
 
 	return RET_OK;
 }

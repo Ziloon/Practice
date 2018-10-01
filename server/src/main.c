@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include "swap.h"
 #include "log.h"
 #include "set.h"
+#include "swap.h"
+#include <stdio.h>
 
 int main(int argc, char const *argv[])
 {

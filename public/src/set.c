@@ -1,9 +1,9 @@
+#include "set.h"
+#include "log.h"
+#include "type.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "type.h"
-#include "log.h"
-#include "set.h"
 
 LOG_IMPORT("Set", LOG_LEV_INFO);
 
@@ -17,8 +17,8 @@ int set_test()
     memset(&stS, 0, sizeof(stS));
 
     logInfo("please input max len of set:\t");
-    
-    if (1 != scanf("%d", &max_len) )
+
+    if (1 != scanf("%d", &max_len))
     {
         return -1;
     }
@@ -26,23 +26,23 @@ int set_test()
     init(&stS, max_len);
     display(stS);
 
-    for(i = max_len; i > 0; i--)
+    for (i = max_len; i > 0; i--)
     {
         append(&stS, i);
     }
     display(stS);
 
     logInfo("input delete element:\t");
-    if (1 != scanf("%d", &e) )
+    if (1 != scanf("%d", &e))
     {
         return -1;
     }
 
-    delete(&stS, e);
+    delete (&stS, e);
     display(stS);
 
     logInfo("input delete element:\t");
-    if (1 != scanf("%d", &e) )
+    if (1 != scanf("%d", &e))
     {
         return -1;
     }
@@ -80,7 +80,7 @@ int display(set s)
             {
                 printf("[%2d]%-8d ", i, s.data[i]);
             }
-        
+
             if (3 == i % 4)
             {
                 printf("\n");
@@ -92,7 +92,7 @@ int display(set s)
     {
         printf("content null\n");
     }
-    
+
     return 0;
 }
 
@@ -194,7 +194,7 @@ int append(set *s, int e)
     return -1;
 }
 
-int delete(set *s, int e)
+int delete (set *s, int e)
 {
     int i = -1;
 

@@ -3,7 +3,8 @@
 #include <stdlib.h>
 
 /* Obtain a backtrace and print it to stdout. */
-void print_trace(void) {
+void print_trace(void)
+{
     void *array[10];
     size_t size;
     char **strings;

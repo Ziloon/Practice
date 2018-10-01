@@ -15,7 +15,7 @@
 // 全局变量
 LOG_IMPORT("Shell", LOG_LEV_INFO);
 
-static const char * const gstrPrompt = "myshell >> ";
+static const char *const gstrPrompt = "myshell >> ";
 
 static CMD_PROC gastCmdRegister[] = {
     // 退出命令，不区分大小写
@@ -31,8 +31,7 @@ static CMD_PROC gastCmdRegister[] = {
     CMD_REGISTER(ShowMeInfo),
     CMD_REGISTER(SetLogCtrl),
     CMD_REGISTER(TestBatch),
-    CMD_REGISTER(TestEndianOper)
-};
+    CMD_REGISTER(TestEndianOper)};
 
 static const int CMD_MAP_NUM = ELEMENT_NUM_OF(gastCmdRegister);
 
@@ -53,7 +52,6 @@ static char *StripString(char *pstrInput)
         logDbg("input len is %d\n", slLen);
     }
 
-
     // 判断输入字符串长度，空串返回NULL；非空串设定有效范围。
     if (strlen("") == slLen)
     {
@@ -70,9 +68,9 @@ static char *StripString(char *pstrInput)
 
     // 排除space字符，当head == tail时，表示遍历完整个字符串为space。返回NULL。
     // 当head字符为space时，前进，最差会停止在\0字符
-    while(isspace(pstrInput[slHead]))
+    while (isspace(pstrInput[slHead]))
     {
-        logDbg("[%d]'%c'\n",slHead, pstrInput[slHead]);
+        logDbg("[%d]'%c'\n", slHead, pstrInput[slHead]);
         slHead += 1;
     }
     if (slHead == slTail)
@@ -82,9 +80,9 @@ static char *StripString(char *pstrInput)
     }
 
     // 由于到此满足head < tail，所以输入为非全space字符串，所以只需要排除字符串尾部的space即可，将space字符置\0。结束条件就是遇到第一个非space字符。
-    while(isspace(pstrInput[slTail-1]))
+    while (isspace(pstrInput[slTail - 1]))
     {
-        logDbg("[%d]'%c' set as '\\0'\n",slTail-1, pstrInput[slTail-1]);
+        logDbg("[%d]'%c' set as '\\0'\n", slTail - 1, pstrInput[slTail - 1]);
         pstrInput[--slTail] = '\0';
     }
 
@@ -95,7 +93,7 @@ static char *StripString(char *pstrInput)
 //返回gastCmdRegister中的CmdStr列(必须为只读字符串)，以供CmdGenerator使用
 static char *GetCmdByIndex(unsigned int ulIdx)
 {
-    if(ulIdx <  CMD_MAP_NUM)
+    if (ulIdx < CMD_MAP_NUM)
     {
         return gastCmdRegister[ulIdx].pszCmd;
     }
@@ -115,7 +113,7 @@ static int ExecCmd(char *pstrCmd)
 
     logDbg("input is \"%s\"\n", pstrCmd);
 
-    for(ulIdx = 0; ulIdx < CMD_MAP_NUM; ulIdx++)
+    for (ulIdx = 0; ulIdx < CMD_MAP_NUM; ulIdx++)
     {
         if (TRUE == gastCmdRegister[ulIdx].bCaseSensitive)
         {
@@ -126,7 +124,7 @@ static int ExecCmd(char *pstrCmd)
             cmp = strcasecmp;
         }
 
-        if(0 == cmp(pstrCmd, gastCmdRegister[ulIdx].pszCmd))
+        if (0 == cmp(pstrCmd, gastCmdRegister[ulIdx].pszCmd))
         {
             gastCmdRegister[ulIdx].fpCmd(); //调用相应的函数
             return RET_OK;
@@ -155,7 +153,7 @@ int ReadCmdLine(char **ppstrCmd)
     *ppstrCmd = StripString(pstrInput);
     logDbg("strip input \"%s\"\n", *ppstrCmd);
 
-    if(NULL == *ppstrCmd)
+    if (NULL == *ppstrCmd)
     {
         return RET_EXEC_FAIL;
     }
@@ -176,7 +174,7 @@ static char *CmdGenerator(const char *pstrText, int slState)
         return NULL;
     }
 
-    if(!slState)
+    if (!slState)
     {
         s_slIdx = 0;
         s_pstrInput = pstrText;
@@ -184,10 +182,10 @@ static char *CmdGenerator(const char *pstrText, int slState)
     }
 
     //当输入字符串与命令列表中某命令部分匹配时，返回该命令字符串
-    while((pstrMatchItem = GetCmdByIndex(s_slIdx++)))
+    while ((pstrMatchItem = GetCmdByIndex(s_slIdx++)))
     {
         assert(pstrMatchItem != NULL);
-        if(0 == strncasecmp(pstrMatchItem, s_pstrInput, s_slInputLen))
+        if (0 == strncasecmp(pstrMatchItem, s_pstrInput, s_slInputLen))
         {
             return strdup(pstrMatchItem);
         }
@@ -196,11 +194,11 @@ static char *CmdGenerator(const char *pstrText, int slState)
     return NULL;
 }
 
-static char **CmdCompletion (const char *pstrText, int slStart, int slEnd)
+static char **CmdCompletion(const char *pstrText, int slStart, int slEnd)
 {
     //rl_attempted_completion_over = 1;
     char **apMatcheItems = NULL;
-    if(0 == slStart)
+    if (0 == slStart)
         apMatcheItems = rl_completion_matches(pstrText, CmdGenerator);
 
     return apMatcheItems;
@@ -223,7 +221,7 @@ int main(void)
     disp("-----------------------------------------\n");
     disp("若要退出，请输入：\n\t'Quit'/'Exit'/'End'/'Bye'/'Q'/'E'/'B'\n\n");
     InitReadLine();
-    while(1)
+    while (1)
     {
         slRet = ReadCmdLine(&pstrCmdLine);
         if (RET_OK != slRet)
@@ -246,7 +244,6 @@ int main(void)
             logDbg("返回命令为 \"%s\"\n", pstrCmdLine);
         }
 
-        
         slRet = ExecCmd(pstrCmdLine);
         if (RET_OK != slRet)
         {
