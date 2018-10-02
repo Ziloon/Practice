@@ -15,7 +15,7 @@ typedef struct
 int init(set *s, unsigned max_len);
 int destory(set *s);
 int append(set *s, int e);
-int remove(set *s, int e);
+int set_remove(set *s, int e);
 int find(set s, int e);
 BOOL is_full(set s);
 BOOL is_empty(set s);

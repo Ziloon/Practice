@@ -38,7 +38,7 @@ int set_test()
         return -1;
     }
 
-    remove (&stS, e);
+    set_remove(&stS, e);
     display(stS);
 
     logInfo("input remove element:\t");
@@ -194,7 +194,7 @@ int append(set *s, int e)
     return -1;
 }
 
-int remove(set *s, int e)
+int set_remove(set *s, int e)
 {
     int i = -1;
 
