@@ -32,16 +32,16 @@ int set_test()
     }
     display(stS);
 
-    logInfo("input delete element:\t");
+    logInfo("input remove element:\t");
     if (1 != scanf("%d", &e))
     {
         return -1;
     }
 
-    delete (&stS, e);
+    remove (&stS, e);
     display(stS);
 
-    logInfo("input delete element:\t");
+    logInfo("input remove element:\t");
     if (1 != scanf("%d", &e))
     {
         return -1;
@@ -194,7 +194,7 @@ int append(set *s, int e)
     return -1;
 }
 
-int delete (set *s, int e)
+int remove(set *s, int e)
 {
     int i = -1;
 

@@ -3,7 +3,7 @@
 #ifndef __SET_H__
 #define __SET_H__
 
-#define SET_NAN	(0x8FFFFFFF)
+#define SET_NAN (0x8FFFFFFF)
 typedef struct
 {
 	unsigned int len;
@@ -15,7 +15,7 @@ typedef struct
 int init(set *s, unsigned max_len);
 int destory(set *s);
 int append(set *s, int e);
-int delete(set *s, int e);
+int remove(set *s, int e);
 int find(set s, int e);
 BOOL is_full(set s);
 BOOL is_empty(set s);
